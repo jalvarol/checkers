@@ -60,6 +60,18 @@ function App() {
     }
   };
 
+  const startNewGame = async () => {
+    const response = await fetch('http://localhost:6969/game/new', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (response.ok) {
+      const newGameState: GameState = await response.json();
+      setGameState(newGameState);
+    }
+  };
+
   const renderSquare = (row: number, col: number) => {
     const letters = 'ABCDEFGH';
     const position = `${letters[col]}${row + 1}`;
@@ -100,16 +112,23 @@ function App() {
         </div>
       );
     }
-    return board;
+
+    return (
+      <div className="board">
+        {board}
+        {/* New Game Button in the center of the board */}
+        <button className="new-game-button" onClick={startNewGame}>
+          New Game
+        </button>
+      </div>
+    );
   };
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Checkers Game</h1>
-        <div className="board">
-          {renderBoard()}
-        </div>
+        {renderBoard()}
         {gameState && (
           <div>
             <p>Current Turn: {gameState.turn}</p>
