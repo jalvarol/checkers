@@ -82,8 +82,8 @@ func checkWinner() {
 }
 
 func captureMove(source, destination string) (bool, string) {
-	sourceCol := source[0]                          // Letter (column)
-	sourceRow, _ := strconv.Atoi(string(source[1])) // Number (row)
+	sourceCol := source[0]
+	sourceRow, _ := strconv.Atoi(string(source[1]))
 
 	destCol := destination[0]
 	destRow, _ := strconv.Atoi(string(destination[1]))
@@ -97,6 +97,14 @@ func captureMove(source, destination string) (bool, string) {
 	}
 
 	return false, ""
+}
+
+func checkPromotion(destination string, color string) bool {
+	destRow, _ := strconv.Atoi(string(destination[1]))
+	if (color == "red" && destRow == 8) || (color == "black" && destRow == 1) {
+		return true
+	}
+	return false
 }
 
 func main() {
@@ -155,6 +163,11 @@ func main() {
 			game.Board[capturedPos] = capturedPiece
 		}
 
+		isPromotion := checkPromotion(move.Destination, source.Color)
+		if isPromotion {
+			source.IsKing = true
+		}
+
 		source.IsOccupied = false
 		game.Board[move.Source] = source
 
@@ -175,6 +188,7 @@ func main() {
 			"turn":         game.Turn,
 			"captured":     isCapture,
 			"captured_pos": capturedPos,
+			"promoted":     isPromotion,
 			"status":       game.Status,
 			"winner":       game.Winner,
 		})

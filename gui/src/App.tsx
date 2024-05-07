@@ -18,6 +18,7 @@ interface GameState {
   winner: string | null;
   captured?: boolean;
   captured_pos?: string;
+  promoted?: boolean;
 }
 
 function App() {
@@ -91,7 +92,7 @@ function App() {
         key={position}
         draggable={draggable}
         onDragStart={() => handleDragStart(position)}
-        onDragOver={(e) => e.preventDefault()} // Allow dropping
+        onDragOver={(e) => e.preventDefault()} 
         onDrop={() => handleDrop(position)}
       >
         {content}
@@ -99,6 +100,7 @@ function App() {
     );
   };
 
+  // Render an 8x8 board
   const renderBoard = () => {
     const board = [];
     for (let row = 7; row >= 0; row--) {
@@ -116,10 +118,6 @@ function App() {
     return (
       <div className="board">
         {board}
-        {/* New Game Button in the center of the board */}
-        <button className="new-game-button" onClick={startNewGame}>
-          New Game
-        </button>
       </div>
     );
   };
@@ -128,12 +126,16 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Checkers Game</h1>
+        <button className="new-game-button" onClick={startNewGame}>
+          New Game
+        </button>
         {renderBoard()}
         {gameState && (
           <div>
             <p>Current Turn: {gameState.turn}</p>
             <p>Game Status: {gameState.status}</p>
             {gameState.captured && <p>Captured a piece at: {gameState.captured_pos}</p>}
+            {gameState.promoted && <p>A piece has been promoted to King!</p>}
             {gameState.winner && <p>Winner: {gameState.winner}</p>}
           </div>
         )}
